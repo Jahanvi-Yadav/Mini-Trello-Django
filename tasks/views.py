@@ -3,8 +3,8 @@ import json
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_http_methods
-
-from .models import Task
+from django.views.decorators.csrf import csrf_exempt
+from .models import Task, Person
 
 
 def board_page(request):
@@ -112,3 +112,94 @@ def task_detail(request, task_id):
     task.save()
 
     return JsonResponse(task_to_dict(task))
+@csrf_exempt
+def people_api(request):
+    """
+    GET  -> Return all team members
+    POST -> Add a new team member
+    """
+
+    if request.method == "GET":
+        people = Person.objects.all().order_by("name")
+
+        data = [
+            {
+                "id": person.id,
+                "name": person.name,
+                "email": person.email,
+            }
+            for person in people
+        ]
+
+        return JsonResponse(data, safe=False)
+
+    if request.method == "POST":
+        try:
+            body = json.loads(request.body)
+
+            name = body.get("name", "").strip()
+            email = body.get("email", "").strip()
+
+            if not name or not email:
+                return JsonResponse(
+                    {"error": "Name and email are required."},
+                    status=400
+                )
+
+            if Person.objects.filter(email=email).exists():
+                return JsonResponse(
+                    {"error": "A person with this email already exists."},
+                    status=400
+                )
+
+            person = Person.objects.create(
+                name=name,
+                email=email
+            )
+
+            return JsonResponse(
+                {
+                    "id": person.id,
+                    "name": person.name,
+                    "email": person.email,
+                },
+                status=201
+            )
+
+        except json.JSONDecodeError:
+            return JsonResponse(
+                {"error": "Invalid JSON data."},
+                status=400
+            )
+
+    return JsonResponse(
+        {"error": "Method not allowed."},
+        status=405
+    )
+
+
+@csrf_exempt
+def person_detail_api(request, person_id):
+    """
+    DELETE -> Delete a team member
+    """
+
+    try:
+        person = Person.objects.get(id=person_id)
+    except Person.DoesNotExist:
+        return JsonResponse(
+            {"error": "Person not found."},
+            status=404
+        )
+
+    if request.method == "DELETE":
+        person.delete()
+
+        return JsonResponse(
+            {"message": "Person deleted successfully."}
+        )
+
+    return JsonResponse(
+        {"error": "Method not allowed."},
+        status=405
+    )

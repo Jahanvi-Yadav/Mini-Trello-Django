@@ -8,4 +8,7 @@ urlpatterns = [
     # REST-style task API.
     path("api/tasks/", views.task_list_create, name="task-list-create"),
     path("api/tasks/<int:task_id>/", views.task_detail, name="task-detail"),
+    # People APIs
+    path("api/people/", views.people_api, name="people_api"),
+    path("api/people/<int:person_id>/", views.person_detail_api, name="person_detail_api"),
 ]
