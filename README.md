@@ -1,6 +1,6 @@
 # Mini-Trello
 
-Mini-Trello is a simple task management web application where users can create, manage, move, delete, and assign tasks to team members.
+Mini-Trello is a simple task management web application built using Django. It allows users to create tasks, manage their task status, assign tasks to team members, and manage team members.
 
 ## Features
 
@@ -9,8 +9,9 @@ Mini-Trello is a simple task management web application where users can create, 
 - Assign tasks to team members
 - Move tasks between To Do, In Progress, and Done
 - Delete tasks with confirmation
-- Create and manage team members
+- Create and manage a team
 - Add team members using name and email
+- View team members
 - Delete team members
 - Assign tasks using a team member dropdown
 - Responsive user interface
@@ -19,8 +20,8 @@ Mini-Trello is a simple task management web application where users can create, 
 
 - Python
 - Django
-- HTML
-- CSS
+- HTML5
+- CSS3
 - JavaScript
 - SQLite
 - PostgreSQL
@@ -29,227 +30,199 @@ Mini-Trello is a simple task management web application where users can create, 
 
 ## Project Structure
 
-```text
-Mini-Trello-Django/
-│
-├── manage.py
-├── requirements.txt
-├── render.yaml
-├── build.sh
-├── .gitignore
-├── README.md
-│
-├── minitrello/
-│   ├── settings.py
-│   ├── urls.py
-│   ├── asgi.py
-│   └── wsgi.py
-│
-└── tasks/
-    ├── admin.py
-    ├── apps.py
-    ├── models.py
-    ├── urls.py
-    ├── views.py
+    Mini-Trello-Django/
     │
-    ├── migrations/
+    ├── manage.py
+    ├── requirements.txt
+    ├── render.yaml
+    ├── build.sh
+    ├── .gitignore
+    ├── README.md
     │
-    ├── templates/
-    │   └── tasks/
-    │       └── index.html
+    ├── minitrello/
+    │   ├── settings.py
+    │   ├── urls.py
+    │   ├── asgi.py
+    │   └── wsgi.py
     │
-    └── static/
-        └── tasks/
-            ├── style.css
-            └── app.js
+    └── tasks/
+        ├── admin.py
+        ├── apps.py
+        ├── models.py
+        ├── urls.py
+        ├── views.py
+        │
+        ├── migrations/
+        │   ├── 0001_initial.py
+        │   └── 0002_person.py
+        │
+        ├── templates/
+        │   └── tasks/
+        │       └── index.html
+        │
+        └── static/
+            └── tasks/
+                ├── style.css
+                └── app.js
 
-## 1. Run in PyCharm
+## Application Workflow
 
-Open the project folder in PyCharm.
+### Task Management
 
-Open the PyCharm Terminal and run:
+The application provides three task stages:
 
-```bash
-python -m venv venv
-```
+1. To Do
+2. In Progress
+3. Done
 
-Activate the virtual environment.
+Users can:
 
-Windows:
+- Create a task
+- Add a title and description
+- Assign a team member
+- Move a task to the next stage
+- Move a task to the previous stage
+- Delete a task
 
-```bash
-venv\Scripts\activate
-```
+### Team Management
 
-Install packages:
+Users can create and manage their team from the `Create Your Team` option.
 
-```bash
-pip install -r requirements.txt
-```
+Team members can be added using:
 
-Create/update the database:
+- Name
+- Email
 
-```bash
-python manage.py migrate
-```
+Added team members are stored in the database and displayed in the team list.
 
-Start the server:
+Users can also delete team members when required.
 
-```bash
-python manage.py runserver
-```
+### Task Assignment
 
-Open:
+While creating a task, the `Assigned To` dropdown displays the available team members.
 
-```text
-http://127.0.0.1:8000/
-```
+The selected team member is stored with the task and displayed on the task card.
 
-## 2. Test the API
+## Database
 
-### Get all tasks
+The application uses SQLite for local development.
 
-```text
-GET /api/tasks/
-```
+PostgreSQL is used for the production deployment on Render.
 
-### Create a task
+The project uses Django migrations for creating and updating database tables.
 
-```text
-POST /api/tasks/
-Content-Type: application/json
-```
+The main database models are:
 
-Example:
+### Task
 
-```json
-{
-  "title": "Design Database Schema",
-  "description": "Create the database schema for the project.",
-  "assigned_to": "Sarah"
-}
-```
+- id
+- title
+- description
+- status
+- assigned_to
+- created_at
 
-New tasks automatically start in `todo`.
+### Person
 
-### Change status
+- id
+- name
+- email
+- created_at
 
-```text
-PATCH /api/tasks/1/
-Content-Type: application/json
-```
+## REST API
 
-Example:
+### Task APIs
 
-```json
-{
-  "status": "in_progress"
-}
-```
+GET all tasks:
 
-### Delete a task
+    GET /api/tasks/
 
-```text
-DELETE /api/tasks/1/
-```
+Create a task:
 
-The browser UI already uses these API endpoints.
+    POST /api/tasks/
 
-## 3. Database
+Update task status:
 
-For local development, Django uses SQLite automatically.
+    PATCH /api/tasks/<id>/
 
-For Render, the project reads the `DATABASE_URL` environment variable and uses PostgreSQL when it is available.
+Update complete task:
 
-This is important because a normal Render web service should not depend on a local SQLite file for permanent production data.
+    PUT /api/tasks/<id>/
 
-## 4. Deploy on Render
+Delete a task:
 
-1. Push this project to GitHub.
-2. Create a new Web Service on Render.
-3. Connect your GitHub repository.
-4. Render can use the included `render.yaml` blueprint.
-5. If setting it manually, use:
+    DELETE /api/tasks/<id>/
 
-Build Command:
+### Team APIs
 
-```text
-./build.sh
-```
+Get all team members:
 
-Start Command:
+    GET /api/people/
 
-```text
-gunicorn minitrello.wsgi:application
-```
+Add a team member:
 
-6. Add a PostgreSQL database on Render and connect its `DATABASE_URL` to the web service.
-7. Deploy.
-8. Open the generated Render URL on another phone/laptop.
+    POST /api/people/
 
-## 5. Important Beginner Notes
+Delete a team member:
 
-### `models.py`
-Defines the database table for tasks.
+    DELETE /api/people/<id>/
 
-### `views.py`
-Contains the Python backend logic and API endpoints.
+## Local Setup
 
-### `urls.py`
-Connects browser/API URLs to Python functions.
+### 1. Clone the Repository
 
-### `index.html`
-Contains the page structure.
+    git clone https://github.com/Jahanvi-Yadav/Mini-Trello-Django.git
 
-### `style.css`
-Contains the UI design and responsive layout.
+### 2. Open the Project
 
-### `app.js`
-Calls the Django API using `fetch()` and updates the page.
+    cd Mini-Trello-Django
 
-## API Endpoints Table
+### 3. Create Virtual Environment
 
-| Method | URL | Purpose |
-|---|---|---|
-| GET | `/api/tasks/` | Get all tasks |
-| POST | `/api/tasks/` | Create a task |
-| PUT | `/api/tasks/<id>/` | Replace a task |
-| PATCH | `/api/tasks/<id>/` | Update task status |
-| DELETE | `/api/tasks/<id>/` | Delete a task |
+    python -m venv venv
 
-## Requirement Mapping
+### 4. Activate Virtual Environment
 
-### Sprint 1
-- Database schema: `tasks/models.py`
-- Create API: `POST /api/tasks/`
-- Read API: `GET /api/tasks/`
-- Three-column frontend: `index.html` + `style.css`
+For Windows:
 
-### Sprint 2
-- Update API: `PATCH` / `PUT`
-- Delete API: `DELETE`
-- Frontend integration: `app.js`
-- Dynamic status movement and deletion: `app.js`
+    venv\Scripts\activate
 
-## Notes for GitHub
+### 5. Install Dependencies
 
-Do NOT upload:
+    pip install -r requirements.txt
 
-- `venv/`
-- `db.sqlite3`
-- `__pycache__/`
+### 6. Run Database Migrations
 
-The included `.gitignore` already handles these files.
+    python manage.py migrate
 
-## Notes for the Project Report
+### 7. Start the Development Server
 
-Take screenshots of:
+    python manage.py runserver
 
-1. Main Mini-Trello board
-2. Create New Task modal
-3. Board with tasks in different columns
-4. A task after moving to another status
-5. API response in Postman, if required
-6. Render deployed application
+Open the application in the browser:
 
-The supplied requirements document asks for a project report and a compressed source-code archive with a README and dependency file.
+    http://127.0.0.1:8000/
+
+## Deployment
+
+The application is deployed using Render.
+
+### Build Command
+
+    bash build.sh
+
+### Start Command
+
+    gunicorn minitrello.wsgi:application
+
+The production database is PostgreSQL and is connected using the `DATABASE_URL` environment variable.
+
+The production environment uses `DEBUG=False`.
+
+## GitHub Repository
+
+https://github.com/Jahanvi-Yadav/Mini-Trello-Django
+
+## Author
+
+Jahanvi Yadav
