@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Trello</title>
+
+    <!-- Main project stylesheet. -->
+    <link rel="stylesheet" href="{% static 'tasks/style.css' %}">
+</head>
+
+<body>
+    <div class="page-container">
+
+        <!-- Header -->
+        <header class="top-header">
+            <div>
+                <p class="small-label">KANBAN BOARD</p>
+                <h1>Mini-Trello</h1>
+                <p class="subtitle">A simple task management board</p>
+            </div>
+
+            <button id="openModalButton" class="primary-button">
+                + Create New Task
+            </button>
+        </header>
+
+        <!-- Message area for success/error messages. -->
+        <div id="messageBox" class="message-box"></div>
+
+        <!-- Three-column Kanban board. -->
+        <main class="board">
+
+            <!-- To Do -->
+            <section class="column todo-column">
+                <div class="column-header">
+                    <div>
+                        <h2>To Do</h2>
+                        <p>Tasks waiting to start</p>
+                    </div>
+                    <span id="todoCount" class="count-badge">0</span>
+                </div>
+                <div id="todoTasks" class="task-list"></div>
+            </section>
+
+            <!-- In Progress -->
+            <section class="column progress-column">
+                <div class="column-header">
+                    <div>
+                        <h2>In Progress</h2>
+                        <p>Tasks currently being worked on</p>
+                    </div>
+                    <span id="progressCount" class="count-badge">0</span>
+                </div>
+                <div id="progressTasks" class="task-list"></div>
+            </section>
+
+            <!-- Done -->
+            <section class="column done-column">
+                <div class="column-header">
+                    <div>
+                        <h2>Done</h2>
+                        <p>Completed tasks</p>
+                    </div>
+                    <span id="doneCount" class="count-badge">0</span>
+                </div>
+                <div id="doneTasks" class="task-list"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Create Task Modal -->
+    <div id="taskModal" class="modal hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div>
+                    <p class="small-label">NEW TASK</p>
+                    <h2>Create New Task</h2>
+                </div>
+                <button id="closeModalButton" class="close-button" aria-label="Close">
+                    ×
+                </button>
+            </div>
+
+            <form id="taskForm">
+                <label for="title">Title *</label>
+                <input
+                    id="title"
+                    name="title"
+                    type="text"
+                    maxlength="150"
+                    placeholder="e.g. Design homepage"
+                    required
+                >
+
+                <label for="description">Description *</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="4"
+                    placeholder="Describe the task..."
+                    required
+                ></textarea>
+
+                <label for="assignedTo">Assigned To</label>
+                <input
+                    id="assignedTo"
+                    name="assigned_to"
+                    type="text"
+                    maxlength="100"
+                    placeholder="Optional"
+                >
+
+                <div class="form-actions">
+                    <button type="button" id="cancelButton" class="secondary-button">
+                        Cancel
+                    </button>
+                    <button type="submit" class="primary-button">
+                        Add Task
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Django provides the CSRF token here for secure POST/PATCH/DELETE requests. -->
+    <form style="display:none;">
+        {% csrf_token %}
+    </form>
+
+    <!-- Main JavaScript file. -->
+    <script src="{% static 'tasks/app.js' %}"></script>
+</body>
+</html>
