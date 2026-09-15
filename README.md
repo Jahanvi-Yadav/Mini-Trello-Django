@@ -1,29 +1,31 @@
-# Mini-Trello - Django Beginner Project
+# Mini-Trello
 
-A simple Kanban board made with:
+Mini-Trello is a simple task management web application where users can create, manage, move, delete, and assign tasks to team members.
 
-- Python + Django
+## Features
+
+- Create new tasks
+- Add task title and description
+- Assign tasks to team members
+- Move tasks between To Do, In Progress, and Done
+- Delete tasks with confirmation
+- Create and manage team members
+- Add team members using name and email
+- Delete team members
+- Assign tasks using a team member dropdown
+- Responsive user interface
+
+## Technologies Used
+
+- Python
+- Django
 - HTML
 - CSS
-- Vanilla JavaScript
-- SQLite for local development
-- PostgreSQL when deployed on Render
-- Django REST-style JSON API using Django views
-
-## Project Features
-
-The project follows the supplied Mini-Trello requirements:
-
-1. Create a task with Title and Description.
-2. Display tasks in three columns:
-   - To Do
-   - In Progress
-   - Done
-3. Move tasks using Previous / Next buttons.
-4. Delete a task after confirmation.
-5. Save all changes in the database.
-6. Responsive layout for mobile and desktop.
-7. REST-style GET, POST, PATCH and DELETE endpoints.
+- JavaScript
+- SQLite
+- PostgreSQL
+- GitHub
+- Render
 
 ## Project Structure
 
@@ -38,30 +40,28 @@ Mini-Trello-Django/
 ├── README.md
 │
 ├── minitrello/
-│   ├── __init__.py
 │   ├── settings.py
 │   ├── urls.py
 │   ├── asgi.py
 │   └── wsgi.py
 │
 └── tasks/
-    ├── __init__.py
     ├── admin.py
     ├── apps.py
     ├── models.py
     ├── urls.py
     ├── views.py
+    │
     ├── migrations/
-    │   ├── __init__.py
-    │   └── 0001_initial.py
+    │
     ├── templates/
     │   └── tasks/
     │       └── index.html
+    │
     └── static/
         └── tasks/
             ├── style.css
             └── app.js
-```
 
 ## 1. Run in PyCharm
 
